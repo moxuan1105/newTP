@@ -10,6 +10,10 @@
 // +----------------------------------------------------------------------
 use think\facade\Route;
 
-Route::get('think', function () {
-    return 'hello,ThinkPHP6!';
-});
+Route::group('login',function(){
+    Route::get('/','index');
+    Route::get('register','register');
+    Route::post('login','login');
+    Route::post('store','store');
+    Route::miss('miss');
+})->prefix('login/')->ext('html');
