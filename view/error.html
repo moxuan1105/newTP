@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>系统发生错误</title>
+  <meta name="robots" content="noindex,nofollow" />
+  <style>
+    /* Base */
+    body {
+      color: #333;
+      font: 16px Verdana, "Helvetica Neue", helvetica, Arial, 'Microsoft YaHei', sans-serif;
+      margin: 0;
+      padding: 0 20px 20px;
+    }
+    h1{
+      margin: 10px 0 0;
+      font-size: 28px;
+      font-weight: 500;
+      line-height: 32px;
+    }
+    h2{
+      color: #4288ce;
+      font-weight: 400;
+      padding: 6px 0;
+      margin: 6px 0 0;
+      font-size: 18px;
+      border-bottom: 1px solid #eee;
+    }
+    h3{
+      margin: 12px;
+      font-size: 16px;
+      font-weight: bold;
+    }
+    abbr{
+      cursor: help;
+      text-decoration: underline;
+      text-decoration-style: dotted;
+    }
+    a{
+      color: #868686;
+      cursor: pointer;
+    }
+    a:hover{
+      text-decoration: underline;
+    }
+    .line-error{
+      background: #f8cbcb;
+    }
+    .echo table {
+      width: 100%;
+    }
+    .echo pre {
+      padding: 16px;
+      overflow: auto;
+      font-size: 85%;
+      line-height: 1.45;
+      background-color: #f7f7f7;
+      border: 0;
+      border-radius: 3px;
+      font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    }
+    .echo pre > pre {
+      padding: 0;
+      margin: 0;
+    }
+    /* Exception Info */
+    .exception {
+      margin-top: 20px;
+    }
+    .exception .message{
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-bottom: 0 none;
+      line-height: 18px;
+      font-size:16px;
+      border-top-left-radius: 4px;
+      border-top-right-radius: 4px;
+      font-family: Consolas,"Liberation Mono",Courier,Verdana,"微软雅黑",serif;
+    }
+    .exception .code{
+      float: left;
+      text-align: center;
+      color: #fff;
+      margin-right: 12px;
+      padding: 16px;
+      border-radius: 4px;
+      background: #999;
+    }
+    .exception .source-code{
+      padding: 6px;
+      border: 1px solid #ddd;
+
+      background: #f9f9f9;
+      overflow-x: auto;
+
+    }
+    .exception .source-code pre{
+      margin: 0;
+    }
+    .exception .source-code pre ol{
+      margin: 0;
+      color: #4288ce;
+      display: inline-block;
+      min-width: 100%;
+      box-sizing: border-box;
+      font-size:14px;
+      font-family: "Century Gothic",Consolas,"Liberation Mono",Courier,Verdana,serif;
+      padding-left: 40px;
+    }
+    .exception .source-code pre li{
+      border-left: 1px solid #ddd;
+      height: 18px;
+      line-height: 18px;
+    }
+    .exception .source-code pre code{
+      color: #333;
+      height: 100%;
+      display: inline-block;
+      border-left: 1px solid #fff;
+      font-size:14px;
+      font-family: Consolas,"Liberation Mono",Courier,Verdana,"微软雅黑",serif;
+    }
+    .exception .trace{
+      padding: 6px;
+      border: 1px solid #ddd;
+      border-top: 0 none;
+      line-height: 16px;
+      font-size:14px;
+      font-family: Consolas,"Liberation Mono",Courier,Verdana,"微软雅黑",serif;
+    }
+    .exception .trace h2:hover {
+      text-decoration: underline;
+      cursor: pointer;
+    }
+    .exception .trace ol{
+      margin: 12px;
+    }
+    .exception .trace ol li{
+      padding: 2px 4px;
+    }
+    .exception div:last-child{
+      border-bottom-left-radius: 4px;
+      border-bottom-right-radius: 4px;
+    }
+
+    /* Exception Variables */
+    .exception-var table{
+      width: 100%;
+      margin: 12px 0;
+      box-sizing: border-box;
+      table-layout:fixed;
+      word-wrap:break-word;
+    }
+    .exception-var table caption{
+      text-align: left;
+      font-size: 16px;
+      font-weight: bold;
+      padding: 6px 0;
+    }
+    .exception-var table caption small{
+      font-weight: 300;
+      display: inline-block;
+      margin-left: 10px;
+      color: #ccc;
+    }
+    .exception-var table tbody{
+      font-size: 13px;
+      font-family: Consolas, "Liberation Mono", Courier, "微软雅黑",serif;
+    }
+    .exception-var table td{
+      padding: 0 6px;
+      vertical-align: top;
+      word-break: break-all;
+    }
+    .exception-var table td:first-child{
+      width: 28%;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+    .exception-var table td pre{
+      margin: 0;
+    }
+
+    /* Copyright Info */
+    .copyright{
+      margin-top: 24px;
+      padding: 12px 0;
+      border-top: 1px solid #eee;
+    }
+
+    /* SPAN elements with the classes below are added by prettyprint. */
+    pre.prettyprint .pln { color: #000 }  /* plain text */
+    pre.prettyprint .str { color: #080 }  /* string content */
+    pre.prettyprint .kwd { color: #008 }  /* a keyword */
+    pre.prettyprint .com { color: #800 }  /* a comment */
+    pre.prettyprint .typ { color: #606 }  /* a type name */
+    pre.prettyprint .lit { color: #066 }  /* a literal value */
+    /* punctuation, lisp open bracket, lisp close bracket */
+    pre.prettyprint .pun, pre.prettyprint .opn, pre.prettyprint .clo { color: #660 }
+    pre.prettyprint .tag { color: #008 }  /* a markup tag name */
+    pre.prettyprint .atn { color: #606 }  /* a markup attribute name */
+    pre.prettyprint .atv { color: #080 }  /* a markup attribute value */
+    pre.prettyprint .dec, pre.prettyprint .var { color: #606 }  /* a declaration; a variable name */
+    pre.prettyprint .fun { color: red }  /* a function name */
+  </style>
+</head>
+<body>
+<div class="exception">
+  <div class="message">
+    <div class="info">
+      <div>
+        <h2>#0 [0]<abbr title="think\exception\RouteNotFoundException">RouteNotFoundException</abbr> in <a class="toggle" title="D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\Route.php line 774">Route.php line 774</a></h2>
+      </div>
+      <div><h1>当前访问路由未定义或不匹配</h1></div>
+    </div>
+  </div>
+  <div class="source-code">
+                    <pre class="prettyprint lang-php"><ol start="765"><li class="line-0-765"><code>
+</code></li><li class="line-0-766"><code>        if (false === $result &amp;&amp; !empty($this-&gt;cross)) {
+</code></li><li class="line-0-767"><code>            // 检测跨域路由
+</code></li><li class="line-0-768"><code>            $result = $this-&gt;cross-&gt;check($this-&gt;request, $url, $completeMatch);
+</code></li><li class="line-0-769"><code>        }
+</code></li><li class="line-0-770"><code>
+</code></li><li class="line-0-771"><code>        if (false !== $result) {
+</code></li><li class="line-0-772"><code>            return $result;
+</code></li><li class="line-0-773"><code>        } elseif ($this-&gt;config['url_route_must']) {
+</code></li><li class="line-0-774 line-error"><code>            throw new RouteNotFoundException();
+</code></li><li class="line-0-775"><code>        }
+</code></li><li class="line-0-776"><code>
+</code></li><li class="line-0-777"><code>        return $this-&gt;url($url);
+</code></li><li class="line-0-778"><code>    }
+</code></li><li class="line-0-779"><code>
+</code></li><li class="line-0-780"><code>    /**
+</code></li><li class="line-0-781"><code>     * 获取当前请求URL的pathinfo信息(不含URL后缀)
+</code></li><li class="line-0-782"><code>     * @access protected
+</code></li><li class="line-0-783"><code>     * @return string
+</code></li></ol></pre>
+  </div>
+  <div class="trace">
+    <h2 data-expand="1">Call Stack</h2>
+    <ol>
+      <li>in <a class="toggle" title="D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\Route.php line 774">Route.php line 774</a></li>
+      <li>
+        at <abbr title="think\Route">Route</abbr>->check() in <a class="toggle" title="D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\Route.php line 737">Route.php line 737</a>                    </li>
+      <li>
+        at <abbr title="think\Route">Route</abbr>->dispatch(<em>object</em>(<abbr title="app\Request">Request</abbr>), <em>object</em>(<abbr title="Closure">Closure</abbr>)) in <a class="toggle" title="D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\Http.php line 213">Http.php line 213</a>                    </li>
+      <li>
+        at <abbr title="think\Http">Http</abbr>->dispatchToRoute(<em>object</em>(<abbr title="app\Request">Request</abbr>)) in <a class="toggle" title="D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\Http.php line 203">Http.php line 203</a>                    </li>
+      <li>
+        at <abbr title="think\Http">Http</abbr>->think\{closure}(<em>object</em>(<abbr title="app\Request">Request</abbr>)) in <a class="toggle" title="D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\Pipeline.php line 59">Pipeline.php line 59</a>                    </li>
+      <li>
+        at <abbr title="think\Pipeline">Pipeline</abbr>->think\{closure}(<em>object</em>(<abbr title="app\Request">Request</abbr>)) in <a class="toggle" title="D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\middleware\SessionInit.php line 67">SessionInit.php line 67</a>                    </li>
+      <li>
+        at <abbr title="think\middleware\SessionInit">SessionInit</abbr>->handle(<em>object</em>(<abbr title="app\Request">Request</abbr>), <em>object</em>(<abbr title="Closure">Closure</abbr>))                    </li>
+      <li>
+        at call_user_func([<em>object</em>(<abbr title="think\middleware\SessionInit">SessionInit</abbr>), 'handle'], <em>object</em>(<abbr title="app\Request">Request</abbr>), <em>object</em>(<abbr title="Closure">Closure</abbr>)) in <a class="toggle" title="D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\Middleware.php line 142">Middleware.php line 142</a>                    </li>
+      <li>
+        at <abbr title="think\Middleware">Middleware</abbr>->think\{closure}(<em>object</em>(<abbr title="app\Request">Request</abbr>), <em>object</em>(<abbr title="Closure">Closure</abbr>)) in <a class="toggle" title="D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\Pipeline.php line 84">Pipeline.php line 84</a>                    </li>
+      <li>
+        at <abbr title="think\Pipeline">Pipeline</abbr>->think\{closure}(<em>object</em>(<abbr title="app\Request">Request</abbr>)) in <a class="toggle" title="D:\phpstudy\WWW\newtp\vendor\topthink\think-trace\src\TraceDebug.php line 71">TraceDebug.php line 71</a>                    </li>
+      <li>
+        at <abbr title="think\trace\TraceDebug">TraceDebug</abbr>->handle(<em>object</em>(<abbr title="app\Request">Request</abbr>), <em>object</em>(<abbr title="Closure">Closure</abbr>))                    </li>
+      <li>
+        at call_user_func([<em>object</em>(<abbr title="think\trace\TraceDebug">TraceDebug</abbr>), 'handle'], <em>object</em>(<abbr title="app\Request">Request</abbr>), <em>object</em>(<abbr title="Closure">Closure</abbr>)) in <a class="toggle" title="D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\Middleware.php line 142">Middleware.php line 142</a>                    </li>
+      <li>
+        at <abbr title="think\Middleware">Middleware</abbr>->think\{closure}(<em>object</em>(<abbr title="app\Request">Request</abbr>), <em>object</em>(<abbr title="Closure">Closure</abbr>)) in <a class="toggle" title="D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\Pipeline.php line 84">Pipeline.php line 84</a>                    </li>
+      <li>
+        at <abbr title="think\Pipeline">Pipeline</abbr>->think\{closure}(<em>object</em>(<abbr title="app\Request">Request</abbr>)) in <a class="toggle" title="D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\Pipeline.php line 65">Pipeline.php line 65</a>                    </li>
+      <li>
+        at <abbr title="think\Pipeline">Pipeline</abbr>->then(<em>object</em>(<abbr title="Closure">Closure</abbr>)) in <a class="toggle" title="D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\Http.php line 204">Http.php line 204</a>                    </li>
+      <li>
+        at <abbr title="think\Http">Http</abbr>->runWithRequest(<em>object</em>(<abbr title="app\Request">Request</abbr>)) in <a class="toggle" title="D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\Http.php line 162">Http.php line 162</a>                    </li>
+      <li>
+        at <abbr title="think\Http">Http</abbr>->run() in <a class="toggle" title="D:\phpstudy\WWW\newtp\public\index.php line 20">index.php line 20</a>                    </li>
+    </ol>
+  </div>
+</div>
+
+
+<div class="exception-var">
+  <h2>Environment Variables</h2>
+  <table>
+    <caption>GET Data</caption>
+    <tbody>
+    <tr>
+      <td>qasd</td>
+      <td>s</td>
+    </tr>
+    <tr>
+      <td>a</td>
+      <td>d</td>
+    </tr>
+    <tr>
+      <td>fg</td>
+      <td>a</td>
+    </tr>
+    <tr>
+      <td>ss</td>
+      <td>d</td>
+    </tr>
+    <tr>
+      <td>as</td>
+      <td>ds</td>
+    </tr>
+    <tr>
+      <td>qw</td>
+      <td>re</td>
+    </tr>
+    <tr>
+      <td>re</td>
+      <td>weq</td>
+    </tr>
+    </tbody>
+  </table>
+  <table>
+    <caption>POST Data<small>empty</small></caption>
+  </table>
+  <table>
+    <caption>Files<small>empty</small></caption>
+  </table>
+  <table>
+    <caption>Cookies</caption>
+    <tbody>
+    <tr>
+      <td>thinkphp_show_page_trace</td>
+      <td>0|0</td>
+    </tr>
+    <tr>
+      <td>testSession</td>
+      <td>e3e8487326f79c1d1e8e0eaabed01065</td>
+    </tr>
+    </tbody>
+  </table>
+  <table>
+    <caption>Session</caption>
+    <tbody>
+    <tr>
+      <td>username</td>
+      <td>admin</td>
+    </tr>
+    </tbody>
+  </table>
+  <table>
+    <caption>Server/Request Data</caption>
+    <tbody>
+    <tr>
+      <td>ALLUSERSPROFILE</td>
+      <td>C:\ProgramData</td>
+    </tr>
+    <tr>
+      <td>APPDATA</td>
+      <td>C:\WINDOWS\system32\config\systemprofile\AppData\Roaming</td>
+    </tr>
+    <tr>
+      <td>CommonProgramFiles</td>
+      <td>C:\Program Files (x86)\Common Files</td>
+    </tr>
+    <tr>
+      <td>CommonProgramFiles(x86)</td>
+      <td>C:\Program Files (x86)\Common Files</td>
+    </tr>
+    <tr>
+      <td>CommonProgramW6432</td>
+      <td>C:\Program Files\Common Files</td>
+    </tr>
+    <tr>
+      <td>COMPUTERNAME</td>
+      <td>F7689968EA</td>
+    </tr>
+    <tr>
+      <td>ComSpec</td>
+      <td>C:\WINDOWS\system32\cmd.exe</td>
+    </tr>
+    <tr>
+      <td>DriverData</td>
+      <td>C:\Windows\System32\Drivers\DriverData</td>
+    </tr>
+    <tr>
+      <td>HTTPS_PROXY</td>
+      <td>http://F7688775:9upXHR4x@10.191.131.15:3128</td>
+    </tr>
+    <tr>
+      <td>HTTP_PROXY</td>
+      <td>http://F7688775:9upXHR4x@10.191.131.15:3128</td>
+    </tr>
+    <tr>
+      <td>LOCALAPPDATA</td>
+      <td>C:\WINDOWS\system32\config\systemprofile\AppData\Local</td>
+    </tr>
+    <tr>
+      <td>NLS_LANG</td>
+      <td>SIMPLIFIED CHINESE_CHINA.ZHS16GBK</td>
+    </tr>
+    <tr>
+      <td>NUMBER_OF_PROCESSORS</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <td>ORACLE_HOME</td>
+      <td>C:\instantclient_11_2</td>
+    </tr>
+    <tr>
+      <td>OS</td>
+      <td>Windows_NT</td>
+    </tr>
+    <tr>
+      <td>Path</td>
+      <td>C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\instantclient_11_2;D:\Program Files\Git\cmd;D:\phpstudy\Extensions\php\php7.3.4nts;D:\Program Files\nodejs\;C:\Program Files\PuTTY\;C:\instantclient_11_2;C:\WINDOWS\system32\config\systemprofile\AppData\Local\Microsoft\WindowsApps</td>
+    </tr>
+    <tr>
+      <td>PATHEXT</td>
+      <td>.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC</td>
+    </tr>
+    <tr>
+      <td>PROCESSOR_ARCHITECTURE</td>
+      <td>x86</td>
+    </tr>
+    <tr>
+      <td>PROCESSOR_ARCHITEW6432</td>
+      <td>AMD64</td>
+    </tr>
+    <tr>
+      <td>PROCESSOR_IDENTIFIER</td>
+      <td>Intel64 Family 6 Model 158 Stepping 10, GenuineIntel</td>
+    </tr>
+    <tr>
+      <td>PROCESSOR_LEVEL</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <td>PROCESSOR_REVISION</td>
+      <td>9e0a</td>
+    </tr>
+    <tr>
+      <td>PROG27B48B2C053</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>ProgramData</td>
+      <td>C:\ProgramData</td>
+    </tr>
+    <tr>
+      <td>ProgramFiles</td>
+      <td>C:\Program Files (x86)</td>
+    </tr>
+    <tr>
+      <td>ProgramFiles(x86)</td>
+      <td>C:\Program Files (x86)</td>
+    </tr>
+    <tr>
+      <td>ProgramW6432</td>
+      <td>C:\Program Files</td>
+    </tr>
+    <tr>
+      <td>PSModulePath</td>
+      <td>C:\Program Files\WindowsPowerShell\Modules;C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules</td>
+    </tr>
+    <tr>
+      <td>PUBLIC</td>
+      <td>C:\Users\Public</td>
+    </tr>
+    <tr>
+      <td>SystemDrive</td>
+      <td>C:</td>
+    </tr>
+    <tr>
+      <td>SystemRoot</td>
+      <td>C:\WINDOWS</td>
+    </tr>
+    <tr>
+      <td>TEMP</td>
+      <td>C:\WINDOWS\TEMP</td>
+    </tr>
+    <tr>
+      <td>TMP</td>
+      <td>C:\WINDOWS\TEMP</td>
+    </tr>
+    <tr>
+      <td>TNS_ADMIN</td>
+      <td>C:\instantclient_11_2</td>
+    </tr>
+    <tr>
+      <td>USERDOMAIN</td>
+      <td>WORKGROUP</td>
+    </tr>
+    <tr>
+      <td>USERNAME</td>
+      <td>F7689968EA$</td>
+    </tr>
+    <tr>
+      <td>USERPROFILE</td>
+      <td>C:\WINDOWS\system32\config\systemprofile</td>
+    </tr>
+    <tr>
+      <td>VBOX_MSI_INSTALL_PATH</td>
+      <td>D:\Program Files\Oracle\VirtualBox\</td>
+    </tr>
+    <tr>
+      <td>windir</td>
+      <td>C:\WINDOWS</td>
+    </tr>
+    <tr>
+      <td>HTTP_COOKIE</td>
+      <td>thinkphp_show_page_trace=0|0; testSession=e3e8487326f79c1d1e8e0eaabed01065; thinkphp_show_page_trace=0|0</td>
+    </tr>
+    <tr>
+      <td>HTTP_ACCEPT_LANGUAGE</td>
+      <td>zh-CN,zh;q=0.9</td>
+    </tr>
+    <tr>
+      <td>HTTP_ACCEPT_ENCODING</td>
+      <td>gzip, deflate</td>
+    </tr>
+    <tr>
+      <td>HTTP_USER_AGENT</td>
+      <td>Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36</td>
+    </tr>
+    <tr>
+      <td>HTTP_ACCEPT</td>
+      <td>*/*</td>
+    </tr>
+    <tr>
+      <td>HTTP_CONNECTION</td>
+      <td>keep-alive</td>
+    </tr>
+    <tr>
+      <td>HTTP_HOST</td>
+      <td>10.149.156.117:9000</td>
+    </tr>
+    <tr>
+      <td>REDIRECT_STATUS</td>
+      <td>200</td>
+    </tr>
+    <tr>
+      <td>SERVER_NAME</td>
+      <td>10.149.156.117</td>
+    </tr>
+    <tr>
+      <td>SERVER_PORT</td>
+      <td>9000</td>
+    </tr>
+    <tr>
+      <td>SERVER_ADDR</td>
+      <td>10.149.156.117</td>
+    </tr>
+    <tr>
+      <td>REMOTE_PORT</td>
+      <td>51240</td>
+    </tr>
+    <tr>
+      <td>REMOTE_ADDR</td>
+      <td>10.149.156.117</td>
+    </tr>
+    <tr>
+      <td>SERVER_SOFTWARE</td>
+      <td>nginx/1.15.11</td>
+    </tr>
+    <tr>
+      <td>GATEWAY_INTERFACE</td>
+      <td>CGI/1.1</td>
+    </tr>
+    <tr>
+      <td>REQUEST_SCHEME</td>
+      <td>http</td>
+    </tr>
+    <tr>
+      <td>SERVER_PROTOCOL</td>
+      <td>HTTP/1.1</td>
+    </tr>
+    <tr>
+      <td>DOCUMENT_ROOT</td>
+      <td>D:/phpstudy/WWW/newtp/public</td>
+    </tr>
+    <tr>
+      <td>DOCUMENT_URI</td>
+      <td>/index.php</td>
+    </tr>
+    <tr>
+      <td>REQUEST_URI</td>
+      <td>/staffs/getList?qasd=s&amp;s=d&amp;a=d&amp;fg=a&amp;ss=d&amp;as=ds&amp;qw=re&amp;re=weq</td>
+    </tr>
+    <tr>
+      <td>SCRIPT_NAME</td>
+      <td>/index.php</td>
+    </tr>
+    <tr>
+      <td>CONTENT_LENGTH</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>CONTENT_TYPE</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>REQUEST_METHOD</td>
+      <td>GET</td>
+    </tr>
+    <tr>
+      <td>QUERY_STRING</td>
+      <td>s=//staffs/getList&amp;qasd=s&amp;s=d&amp;a=d&amp;fg=a&amp;ss=d&amp;as=ds&amp;qw=re&amp;re=weq</td>
+    </tr>
+    <tr>
+      <td>PATH_TRANSLATED</td>
+      <td>D:/phpstudy/WWW/newtp/public</td>
+    </tr>
+    <tr>
+      <td>PATH_INFO</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>SCRIPT_FILENAME</td>
+      <td>D:/phpstudy/WWW/newtp/public/index.php</td>
+    </tr>
+    <tr>
+      <td>FCGI_ROLE</td>
+      <td>RESPONDER</td>
+    </tr>
+    <tr>
+      <td>PHP_SELF</td>
+      <td>/index.php</td>
+    </tr>
+    <tr>
+      <td>REQUEST_TIME_FLOAT</td>
+      <td>1594888872.0353</td>
+    </tr>
+    <tr>
+      <td>REQUEST_TIME</td>
+      <td>1594888872</td>
+    </tr>
+    </tbody>
+  </table>
+  <table>
+    <caption>Environment Variables</caption>
+    <tbody>
+    <tr>
+      <td>APP_DEBUG</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>APP_DEFAULT_TIMEZONE</td>
+      <td>Asia/Shanghai</td>
+    </tr>
+    <tr>
+      <td>DATABASE_TYPE</td>
+      <td>mysql</td>
+    </tr>
+    <tr>
+      <td>DATABASE_HOSTNAME</td>
+      <td>127.0.0.1</td>
+    </tr>
+    <tr>
+      <td>DATABASE_DATABASE</td>
+      <td>test</td>
+    </tr>
+    <tr>
+      <td>DATABASE_USERNAME</td>
+      <td>root</td>
+    </tr>
+    <tr>
+      <td>DATABASE_PASSWORD</td>
+      <td>root</td>
+    </tr>
+    <tr>
+      <td>DATABASE_HOSTPORT</td>
+      <td>3306</td>
+    </tr>
+    <tr>
+      <td>DATABASE_CHARSET</td>
+      <td>utf8</td>
+    </tr>
+    <tr>
+      <td>DATABASE_DEBUG</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>LANG_DEFAULT_LANG</td>
+      <td>zh-cn</td>
+    </tr>
+    </tbody>
+  </table>
+  <table>
+    <caption>ThinkPHP Constants</caption>
+    <tbody>
+    <tr>
+      <td>FILTER_VALIDATE_BOOL</td>
+      <td>258</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="copyright">
+  <a title="官方网站" href="http://www.thinkphp.cn">ThinkPHP</a>
+  <span>V6.0.2</span>
+  <span>{ 十年磨一剑-为API开发设计的高性能框架 }</span>
+  <span>- <a title="官方手册" href="https://www.kancloud.cn/manual/thinkphp6_0/content">官方手册</a></span>
+</div>
+<script>
+  function $(selector, node){
+    var elements;
+
+    node = node || document;
+    if(document.querySelectorAll){
+      elements = node.querySelectorAll(selector);
+    } else {
+      switch(selector.substr(0, 1)){
+        case '#':
+          elements = [node.getElementById(selector.substr(1))];
+          break;
+        case '.':
+          if(document.getElementsByClassName){
+            elements = node.getElementsByClassName(selector.substr(1));
+          } else {
+            elements = get_elements_by_class(selector.substr(1), node);
+          }
+          break;
+        default:
+          elements = node.getElementsByTagName();
+      }
+    }
+    return elements;
+
+    function get_elements_by_class(search_class, node, tag) {
+      var elements = [], eles,
+              pattern  = new RegExp('(^|\\s)' + search_class + '(\\s|$)');
+
+      node = node || document;
+      tag  = tag  || '*';
+
+      eles = node.getElementsByTagName(tag);
+      for(var i = 0; i < eles.length; i++) {
+        if(pattern.test(eles[i].className)) {
+          elements.push(eles[i])
+        }
+      }
+
+      return elements;
+    }
+  }
+
+  $.getScript = function(src, func){
+    var script = document.createElement('script');
+
+    script.async  = 'async';
+    script.src    = src;
+    script.onload = func || function(){};
+
+    $('head')[0].appendChild(script);
+  }
+
+  ;(function(){
+    var files = $('.toggle');
+    var ol    = $('ol', $('.prettyprint')[0]);
+    var li    = $('li', ol[0]);
+
+    // 短路径和长路径变换
+    for(var i = 0; i < files.length; i++){
+      files[i].ondblclick = function(){
+        var title = this.title;
+
+        this.title = this.innerHTML;
+        this.innerHTML = title;
+      }
+    }
+
+    (function () {
+      var expand = function (dom, expand) {
+        var ol = $('ol', dom.parentNode)[0];
+        expand = undefined === expand ? dom.attributes['data-expand'].value === '0' : undefined;
+        if (expand) {
+          dom.attributes['data-expand'].value = '1';
+          ol.style.display = 'none';
+          dom.innerText = 'Call Stack (展开)';
+        } else {
+          dom.attributes['data-expand'].value = '0';
+          ol.style.display = 'block';
+          dom.innerText = 'Call Stack (折叠)';
+        }
+      };
+      var traces = $('.trace');
+      for (var i = 0; i < traces.length; i ++) {
+        var h2 = $('h2', traces[i])[0];
+        expand(h2);
+        h2.onclick = function () {
+          expand(this);
+        };
+      }
+    })();
+
+    $.getScript('//cdn.bootcss.com/prettify/r298/prettify.min.js', function(){
+      prettyPrint();
+    });
+  })();
+</script>
+<div id="think_page_trace" style="position: fixed;bottom:0;right:0;font-size:14px;width:100%;z-index: 999999;color: #000;text-align:left;font-family:'微软雅黑';">
+  <div id="think_page_trace_tab" style="display: none;background:white;margin:0;height: 250px;">
+    <div id="think_page_trace_tab_tit" style="height:30px;padding: 6px 12px 0;border-bottom:1px solid #ececec;border-top:1px solid #ececec;font-size:16px">
+      <span style="color:#000;padding-right:12px;height:30px;line-height:30px;display:inline-block;margin-right:3px;cursor:pointer;font-weight:700">基本</span>
+      <span style="color:#000;padding-right:12px;height:30px;line-height:30px;display:inline-block;margin-right:3px;cursor:pointer;font-weight:700">文件</span>
+      <span style="color:#000;padding-right:12px;height:30px;line-height:30px;display:inline-block;margin-right:3px;cursor:pointer;font-weight:700">流程</span>
+      <span style="color:#000;padding-right:12px;height:30px;line-height:30px;display:inline-block;margin-right:3px;cursor:pointer;font-weight:700">错误</span>
+      <span style="color:#000;padding-right:12px;height:30px;line-height:30px;display:inline-block;margin-right:3px;cursor:pointer;font-weight:700">SQL</span>
+      <span style="color:#000;padding-right:12px;height:30px;line-height:30px;display:inline-block;margin-right:3px;cursor:pointer;font-weight:700">调试</span>
+    </div>
+    <div id="think_page_trace_tab_cont" style="overflow:auto;height:212px;padding:0;line-height: 24px">
+      <div style="display:none;">
+        <ol style="padding: 0; margin:0">
+          <li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">请求信息 : 2020-07-16 16:41:12 HTTP/1.1 GET : http://10.149.156.117:9000/staffs/getList?qasd=s&amp;s=d&amp;a=d&amp;fg=a&amp;ss=d&amp;as=ds&amp;qw=re&amp;re=weq</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">运行时间 : 0.020003s [ 吞吐率：49.99req/s ] 内存消耗：1,533.73kb 文件加载：168</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">查询信息 : 0 queries</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">缓存信息 : 0 reads,0 writes</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">会话信息 : SESSION_ID=e3e8487326f79c1d1e8e0eaabed01065</li>                </ol>
+      </div>
+      <div style="display:none;">
+        <ol style="padding: 0; margin:0">
+          <li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\public\index.php ( 0.79 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\autoload.php ( 0.17 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\composer\autoload_real.php ( 2.42 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\composer\ClassLoader.php ( 13.14 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\composer\autoload_static.php ( 13.83 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\think-helper\src\helper.php ( 7.35 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\ralouphie\getallheaders\src\getallheaders.php ( 1.60 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\guzzlehttp\promises\src\functions_include.php ( 0.16 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\guzzlehttp\promises\src\functions.php ( 11.77 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\guzzlehttp\psr7\src\functions_include.php ( 0.15 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\guzzlehttp\psr7\src\functions.php ( 26.06 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\guzzlehttp\guzzle\src\functions_include.php ( 0.16 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\guzzlehttp\guzzle\src\functions.php ( 4.47 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\opis\closure\functions.php ( 0.95 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\symfony\polyfill-mbstring\bootstrap.php ( 6.42 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\complex\classes\src\functions\abs.php ( 0.81 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\complex\classes\src\functions\acos.php ( 1.04 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\complex\classes\src\functions\acosh.php ( 0.90 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\complex\classes\src\functions\acot.php ( 0.74 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\complex\classes\src\functions\acoth.php ( 0.76 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\complex\classes\src\functions\acsc.php ( 0.83 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\complex\classes\src\functions\acsch.php ( 0.86 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\complex\classes\src\functions\argument.php ( 0.81 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\complex\classes\src\functions\asec.php ( 0.83 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\complex\classes\src\functions\asech.php ( 0.85 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\complex\classes\src\functions\asin.php ( 1.01 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\complex\classes\src\functions\asinh.php ( 0.91 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\complex\classes\src\functions\atan.php ( 1.34 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\complex\classes\src\functions\atanh.php ( 1.08 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\complex\classes\src\functions\conjugate.php ( 0.74 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\complex\classes\src\functions\cos.php ( 0.92 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\complex\classes\src\functions\cosh.php ( 0.90 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\complex\classes\src\functions\cot.php ( 0.83 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\complex\classes\src\functions\coth.php ( 0.74 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\complex\classes\src\functions\csc.php ( 0.82 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\complex\classes\src\functions\csch.php ( 0.84 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\complex\classes\src\functions\exp.php ( 0.92 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\complex\classes\src\functions\inverse.php ( 0.87 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\complex\classes\src\functions\ln.php ( 0.94 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\complex\classes\src\functions\log2.php ( 1.06 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\complex\classes\src\functions\log10.php ( 1.08 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\complex\classes\src\functions\negative.php ( 0.76 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\complex\classes\src\functions\pow.php ( 1.27 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\complex\classes\src\functions\rho.php ( 0.84 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\complex\classes\src\functions\sec.php ( 0.71 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\complex\classes\src\functions\sech.php ( 0.74 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\complex\classes\src\functions\sin.php ( 0.87 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\complex\classes\src\functions\sinh.php ( 0.90 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\complex\classes\src\functions\sqrt.php ( 0.81 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\complex\classes\src\functions\tan.php ( 1.21 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\complex\classes\src\functions\tanh.php ( 1.11 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\complex\classes\src\functions\theta.php ( 1.25 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\complex\classes\src\operations\add.php ( 1.26 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\complex\classes\src\operations\subtract.php ( 1.28 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\complex\classes\src\operations\multiply.php ( 1.41 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\complex\classes\src\operations\divideby.php ( 1.75 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\complex\classes\src\operations\divideinto.php ( 1.75 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\matrix\classes\src\functions\adjoint.php ( 0.69 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\matrix\classes\src\functions\antidiagonal.php ( 0.74 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\matrix\classes\src\functions\cofactors.php ( 0.70 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\matrix\classes\src\functions\determinant.php ( 0.71 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\matrix\classes\src\functions\diagonal.php ( 0.70 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\matrix\classes\src\functions\identity.php ( 0.70 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\matrix\classes\src\functions\inverse.php ( 0.69 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\matrix\classes\src\functions\minors.php ( 0.69 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\matrix\classes\src\functions\trace.php ( 0.69 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\matrix\classes\src\functions\transpose.php ( 0.71 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\matrix\classes\src\operations\add.php ( 0.93 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\matrix\classes\src\operations\directsum.php ( 0.95 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\matrix\classes\src\operations\subtract.php ( 0.96 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\matrix\classes\src\operations\multiply.php ( 0.98 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\matrix\classes\src\operations\divideby.php ( 0.96 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\markbaker\matrix\classes\src\operations\divideinto.php ( 0.96 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\symfony\polyfill-php72\bootstrap.php ( 1.78 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\symfony\polyfill-php80\bootstrap.php ( 1.46 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\symfony\var-dumper\Resources\functions\dump.php ( 0.79 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\App.php ( 14.18 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\Container.php ( 14.73 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\psr\container\src\ContainerInterface.php ( 1.07 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\app\provider.php ( 0.19 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\Http.php ( 6.16 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\think-helper\src\helper\Str.php ( 7.27 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\app\Request.php ( 0.09 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\Request.php ( 52.82 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\Env.php ( 4.15 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\app\common.php ( 0.22 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\helper.php ( 18.33 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\Config.php ( 4.91 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\config\app.php ( 1.07 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\facade\Env.php ( 0.97 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\Facade.php ( 2.71 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\config\cache.php ( 0.82 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\config\console.php ( 0.23 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\config\cookie.php ( 0.49 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\config\database.php ( 2.29 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\config\filesystem.php ( 0.63 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\config\lang.php ( 0.75 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\config\log.php ( 1.37 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\config\middleware.php ( 0.19 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\config\route.php ( 1.54 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\config\session.php ( 0.57 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\config\trace.php ( 0.34 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\config\view.php ( 1.02 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\app\event.php ( 0.25 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\Event.php ( 7.34 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\app\service.php ( 0.13 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\app\AppService.php ( 0.26 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\Service.php ( 1.67 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\Lang.php ( 7.70 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\lang\zh-cn.php ( 12.88 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\initializer\Error.php ( 3.19 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\initializer\RegisterService.php ( 1.33 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\services.php ( 0.18 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\service\PaginatorService.php ( 1.52 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\service\ValidateService.php ( 0.99 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\service\ModelService.php ( 1.51 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\think-migration\src\Service.php ( 1.94 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\think-trace\src\Service.php ( 0.77 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\Middleware.php ( 6.78 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\initializer\BootService.php ( 0.77 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\think-orm\src\Paginator.php ( 11.39 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\Validate.php ( 45.60 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\think-orm\src\Model.php ( 25.87 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\think-orm\src\model\concern\Attribute.php ( 16.98 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\think-orm\src\model\concern\RelationShip.php ( 26.03 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\think-orm\src\model\concern\ModelEvent.php ( 2.26 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\think-orm\src\model\concern\TimeStamp.php ( 5.36 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\think-orm\src\model\concern\Conversion.php ( 7.73 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\think-helper\src\contract\Arrayable.php ( 0.09 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\think-helper\src\contract\Jsonable.php ( 0.13 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\Db.php ( 2.78 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\think-orm\src\DbManager.php ( 8.86 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\Log.php ( 8.50 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\Manager.php ( 3.97 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\psr\log\Psr\Log\LoggerInterface.php ( 3.04 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\Cache.php ( 4.79 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\psr\simple-cache\src\CacheInterface.php ( 4.50 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\Console.php ( 21.27 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\app\middleware.php ( 0.32 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\Pipeline.php ( 2.60 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\think-trace\src\TraceDebug.php ( 2.94 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\middleware\SessionInit.php ( 2.02 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\Session.php ( 1.80 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\think-helper\src\helper\Arr.php ( 15.54 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\session\driver\File.php ( 6.31 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\contract\SessionHandlerInterface.php ( 0.87 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\session\Store.php ( 7.26 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\Route.php ( 22.25 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\route\RuleName.php ( 4.87 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\route\Domain.php ( 5.41 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\route\RuleGroup.php ( 14.44 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\route\Rule.php ( 23.26 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\route\app.php ( 1.51 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\facade\Route.php ( 0.98 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\route\RuleItem.php ( 9.20 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\exception\RouteNotFoundException.php ( 0.82 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\exception\HttpException.php ( 1.20 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\app\ExceptionHandle.php ( 1.37 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\exception\Handle.php ( 10.12 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\Response.php ( 8.54 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\tpl\think_exception.tpl ( 17.02 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\facade\App.php ( 0.97 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\response\Html.php ( 0.98 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\Cookie.php ( 6.15 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\think-trace\src\Html.php ( 4.49 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\log\driver\File.php ( 5.94 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\contract\LogHandlerInterface.php ( 0.86 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\log\Channel.php ( 6.41 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\cache\driver\File.php ( 7.38 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\cache\Driver.php ( 7.81 KB )</li><li style="border-bottom:1px solid #EEE;font-size:14px;padding:0 12px">D:\phpstudy\WWW\newtp\vendor\topthink\framework\src\think\contract\CacheHandlerInterface.php ( 2.25 KB )</li>                </ol>
+      </div>
+      <div style="display:none;">
+        <ol style="padding: 0; margin:0">
+        </ol>
+      </div>
+      <div style="display:none;">
+        <ol style="padding: 0; margin:0">
+        </ol>
+      </div>
+      <div style="display:none;">
+        <ol style="padding: 0; margin:0">
+        </ol>
+      </div>
+      <div style="display:none;">
+        <ol style="padding: 0; margin:0">
+        </ol>
+      </div>
+    </div>
+  </div>
+  <div id="think_page_trace_close" style="display:none;text-align:right;height:15px;position:absolute;top:10px;right:12px;cursor:pointer;"><img style="vertical-align:top;" src="data:image/gif;base64,R0lGODlhDwAPAJEAAAAAAAMDA////wAAACH/C1hNUCBEYXRhWE1QPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS4wLWMwNjAgNjEuMTM0Nzc3LCAyMDEwLzAyLzEyLTE3OjMyOjAwICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdFJlZj0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlUmVmIyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IFdpbmRvd3MiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6MUQxMjc1MUJCQUJDMTFFMTk0OUVGRjc3QzU4RURFNkEiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6MUQxMjc1MUNCQUJDMTFFMTk0OUVGRjc3QzU4RURFNkEiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDoxRDEyNzUxOUJBQkMxMUUxOTQ5RUZGNzdDNThFREU2QSIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDoxRDEyNzUxQUJBQkMxMUUxOTQ5RUZGNzdDNThFREU2QSIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PgH//v38+/r5+Pf29fTz8vHw7+7t7Ovq6ejn5uXk4+Lh4N/e3dzb2tnY19bV1NPS0dDPzs3My8rJyMfGxcTDwsHAv769vLu6ubi3trW0s7KxsK+urayrqqmop6alpKOioaCfnp2cm5qZmJeWlZSTkpGQj46NjIuKiYiHhoWEg4KBgH9+fXx7enl4d3Z1dHNycXBvbm1sa2ppaGdmZWRjYmFgX15dXFtaWVhXVlVUU1JRUE9OTUxLSklIR0ZFRENCQUA/Pj08Ozo5ODc2NTQzMjEwLy4tLCsqKSgnJiUkIyIhIB8eHRwbGhkYFxYVFBMSERAPDg0MCwoJCAcGBQQDAgEAACH5BAAAAAAALAAAAAAPAA8AAAIdjI6JZqotoJPR1fnsgRR3C2jZl3Ai9aWZZooV+RQAOw==" /></div>
+</div>
+<div id="think_page_trace_open" style="height:30px;float:right;text-align:right;overflow:hidden;position:fixed;bottom:0;right:0;color:#000;line-height:30px;cursor:pointer;">
+  <div style="background:#232323;color:#FFF;padding:0 6px;float:right;line-height:30px;font-size:14px">0.022417s </div>
+  <img width="30" style="" title="ShowPageTrace" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyBpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBXaW5kb3dzIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjVERDVENkZGQjkyNDExRTE5REY3RDQ5RTQ2RTRDQUJCIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjVERDVENzAwQjkyNDExRTE5REY3RDQ5RTQ2RTRDQUJCIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6NURENUQ2RkRCOTI0MTFFMTlERjdENDlFNDZFNENBQkIiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6NURENUQ2RkVCOTI0MTFFMTlERjdENDlFNDZFNENBQkIiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5fx6IRAAAMCElEQVR42sxae3BU1Rk/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">
+</div>
+
+<script type="text/javascript">
+  (function(){
+    var tab_tit  = document.getElementById('think_page_trace_tab_tit').getElementsByTagName('span');
+    var tab_cont = document.getElementById('think_page_trace_tab_cont').getElementsByTagName('div');
+    var open     = document.getElementById('think_page_trace_open');
+    var close    = document.getElementById('think_page_trace_close').children[0];
+    var trace    = document.getElementById('think_page_trace_tab');
+    var cookie   = document.cookie.match(/thinkphp_show_page_trace=(\d\|\d)/);
+    var history  = (cookie && typeof cookie[1] != 'undefined' && cookie[1].split('|')) || [0,0];
+    open.onclick = function(){
+      trace.style.display = 'block';
+      this.style.display = 'none';
+      close.parentNode.style.display = 'block';
+      history[0] = 1;
+      document.cookie = 'thinkphp_show_page_trace='+history.join('|')
+    }
+    close.onclick = function(){
+      trace.style.display = 'none';
+      this.parentNode.style.display = 'none';
+      open.style.display = 'block';
+      history[0] = 0;
+      document.cookie = 'thinkphp_show_page_trace='+history.join('|')
+    }
+    for(var i = 0; i < tab_tit.length; i++){
+      tab_tit[i].onclick = (function(i){
+        return function(){
+          for(var j = 0; j < tab_cont.length; j++){
+            tab_cont[j].style.display = 'none';
+            tab_tit[j].style.color = '#999';
+          }
+          tab_cont[i].style.display = 'block';
+          tab_tit[i].style.color = '#000';
+          history[1] = i;
+          document.cookie = 'thinkphp_show_page_trace='+history.join('|')
+        }
+      })(i)
+    }
+    parseInt(history[0]) && open.click();
+    tab_tit[history[1]].click();
+  })();
+</script>
+</body>
+</html>

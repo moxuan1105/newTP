@@ -28,4 +28,10 @@ class User extends Model
         $passwordHash = $this->getAttr('password');
         return password_verify($password,$passwordHash);
     }
+
+    public function userInfo()
+    {
+        return $this->hasOne(UserInfo::class,'user_id');
+    }
 }
+

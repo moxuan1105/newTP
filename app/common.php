@@ -11,3 +11,19 @@ use think\Request;
 function createToken(Request $request){
     return $request->buildToken();
 }
+
+
+/**
+ * page limit 的预处理
+ *
+ * @param $request
+ * @return array
+ */
+function pagePrepare(Request $request)
+{
+    $page = (int)$request->param('page');
+    $limit = (int)$request->param('limit');
+    $page = (int)($page - 1) * $limit;
+
+    return [$page,$limit];
+}

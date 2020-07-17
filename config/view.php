@@ -25,7 +25,7 @@ return [
     'tpl_replace_string'  =>  [
         '__BOOTSTRAP__'=>'/static/lib/bootstrap',
         '__LAYUI__'=>'/static/lib/layui',
-        '__STATIC__'=>'/static',
         '__JS__' => '/static/javascript',
+        '__CSS__'=>'/static/css'
     ]
 ];

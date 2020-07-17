@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    {css href="__LAYUI__/css/layui.css"}
+    {css href="__CSS__/font.css"}
+    {css href="__CSS__/xadmin.css"}
+    {css href="__CSS__/theme5.css"}
+
+</head>
+<body>
+<div class="layui-container">
+    <div class="layui-card">
+        <div class="layui-card-header">
+            <h1>人员管理</h1>
+        </div>
+        <div class="layui-card-body">
+            <div>
+                <button class="layui-upload-button" id="upload">上传文件</button>
+            </div>
+
+            <table class="layui-table" id="staff_table"></table>
+        </div>
+
+
+    </div>
+</div>
+
+{js href="__JS__/jquery-3.5.1.js"}
+{js href="__LAYUI__/layui.js"}
+{js href="__JS__/xadmin.js"}
+
+<script type="text/javascript">
+    layui.use(['table', 'form', 'layer', 'upload'], function () {
+        var table = layui.table;
+        var form = layui.form;
+        var layer = layui.layer;
+        var upload = layui.upload;
+
+        form.render();
+
+        layui.code
+        upload.render({
+            elem: '#upload',
+            url: "{:url('upload')}",
+            method: 'post',
+            data: {
+                field: 'file'
+            },
+            accept:'file',
+            multiple: true,
+            number: 5,
+            done: function (res, index, upload) {
+                console.log(res);
+            }
+            , allDone: function (obj) { //当文件全部被提交后，才触发
+                console.log(obj.total); //得到总文件数
+                console.log(obj.successful); //请求成功的文件数
+                console.log(obj.aborted); //请求失败的文件数
+            }
+        });
+
+
+        table.render({
+            elem: '#staff_table',
+            url: "{:url('getList')}",
+            cols: [[
+                {title: 'NO.', type: 'numbers'},
+                {title: '工号', field: 'work_no'},
+                {title: '姓名', field: 'name'}
+            ]]
+        });
+
+    })
+</script>
+</body>
+</html>
