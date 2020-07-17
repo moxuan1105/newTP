@@ -130,6 +130,9 @@ class Staffs extends BaseController
         $field = $request->param('field');
         $fileUpload = new FileUpload();
         $uploadResult = $fileUpload->upload($field);
+
+        if(false )
+        $excel = new Excel();
         return json($uploadResult);
     }
 }
