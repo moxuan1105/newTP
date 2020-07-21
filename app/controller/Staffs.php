@@ -131,8 +131,19 @@ class Staffs extends BaseController
         $fileUpload = new FileUpload();
         $uploadResult = $fileUpload->upload($field);
 
-        if(false )
-        $excel = new Excel();
-        return json($uploadResult);
+        if(false == $uploadResult[0]){
+            return $uploadResult;
+        }
+
+        $fileExtArray = ['xls','xlsx','csv'];
+
+        $fileExt = $uploadResult['fileExt'];
+        if(!in_array($fileExt,$fileExtArray)){
+            unlink($uploadResult['savePath']);
+            return json([false,'文件类型不匹配']);
+        }
+        $excel = new ExcelReader($uploadResult['savePath'],$uploadResult['fileExt']);
+        $data = $excel->getExcelValue();
+        return json($data);
     }
 }

@@ -19,8 +19,9 @@ class FileUpload
 
         try {
             // 限制文件大小为20M
-            validate([$field => 'filesize:20480000'], [$field.'.filesize' => '文件不能大于20M'])->check([$field => $files]);
+            validate([$field => 'filesize:20480000'], [$field . '.filesize' => '文件不能大于20M'])->check([$field => $files]);
             $fileExt = $files->getOriginalExtension();
+            $fileExt = strtolower($fileExt);
             $failExt = ['exe', 'sh'];
             if (in_array($fileExt, $failExt)) {
                 return [false, '当前文件类型不允许上传'];
@@ -42,6 +43,7 @@ class FileUpload
             true,
             'savePath' => $savePath,
             'fileName' => $fileName,
+            'fileExt' => $fileExt,
             'fileHash' => $fileHash
         ];
     }

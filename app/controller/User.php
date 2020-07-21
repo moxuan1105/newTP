@@ -35,7 +35,6 @@ class User extends BaseController
     }
 
     public function getUserInfo(){
-//        $userInfo =  UserInfo::where('user_id',1)->select();
         $userInfo = UserModel::hasWhere('userInfo',['info'=>56465])->select();
 
         if($userInfo->isEmpty()){
@@ -49,6 +48,4 @@ class User extends BaseController
 
         return json($data);
     }
-
-
 }

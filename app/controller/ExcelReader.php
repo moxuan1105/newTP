@@ -6,25 +6,27 @@ namespace app\controller;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Reader\Exception;
 
-class Excel
+class ExcelReader
 {
     protected $spreadsheet;
     protected $sheet;
 
     /**
-     * Excel constructor.
+     * ExcelReader constructor.
      * @param string $filePath
      * @param string $fileExt
      */
     public function __construct(string $filePath, string $fileExt)
     {
         try {
-            $objRead = IOFactory::createReader($fileExt);
+            $fileType = ucfirst($fileExt);
+            $objRead = IOFactory::createReader($fileType);
+            $this->spreadsheet = $objRead->load($filePath);
+            $this->sheet = $this->spreadsheet->getActiveSheet();
         } catch (Exception $e) {
-            return $e->getMessage();
+            return [false,$e->getMessage()];
         }
-        $this->spreadsheet = $objRead->load($filePath);
-        $this->sheet = $this->spreadsheet->getActiveSheet();
+
     }
 
     /**
@@ -35,10 +37,11 @@ class Excel
     {
         $highestRow = $this->sheet->getHighestRow();
         $highestColumn = $this->sheet->getHighestColumn();
+        $highestColumn++;
         $data = [];
         for($row = 2;$row<$highestRow;$row++){
             $columnData = [];
-            for ($column = 'A';$column<$highestColumn;$column++){
+            for ($column = 'A';$column != $highestColumn;$column++){
                 $titleCell = $column.'1';
                 $cell = $column.$row;
                 try {
