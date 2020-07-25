@@ -12,7 +12,6 @@ use think\model\concern\SoftDelete;
 class User extends Model
 {
     //
-    protected $name = 'user';
     use SoftDelete;
     protected $deleteTime = 'delete_time';
     protected $autoWriteTimestamp = 'datetime';
